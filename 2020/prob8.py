@@ -1,4 +1,3 @@
-import re
 with open("prob8_input.txt", 'r') as f:
     rawdata = f.readlines()
 last_line = len(rawdata) - 1
