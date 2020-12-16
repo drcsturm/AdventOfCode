@@ -1,5 +1,5 @@
-with open('delete_me.txt', 'r') as f:
-# with open('prob11_input.txt', 'r') as f:
+# with open('delete_me.txt', 'r') as f:
+with open('prob11_input.txt', 'r') as f:
     rawdata = f.readlines()
     orig_grid = []
     for line in rawdata:
@@ -11,10 +11,15 @@ ybound = [0, len(orig_grid[0])]
 def occupied(xy, grid):
     return grid[xy[0]][xy[1]] == "#"
 
+def empty_seat(xy, grid):
+    return grid[xy[0]][xy[1]] == "L"
+
 def inbounds(xy):
     return xy[0] >= xbound[0] and xy[0] < xbound[1] and xy[1] >= ybound[0] and xy[1] < ybound[1]
     
 def occupancy(x, y, grid, seat_view=1, max_neighbors=4):
+    origx = x
+    origy = y
     count = 0
     directions = [
         [-1, 0], # 12 oclock
@@ -28,14 +33,21 @@ def occupancy(x, y, grid, seat_view=1, max_neighbors=4):
     ]
     for direction in directions:
         view_count = 1
+        x = origx
+        y = origy
         while view_count <= seat_view:
             seat = [x+direction[0], y+direction[1]]
             if not inbounds(seat):
+                break
+            if empty_seat(seat, grid):
                 break
             if occupied(seat, grid):
                 count += 1
                 break
             view_count += 1
+            x, y = seat[0], seat[1]
+    x = origx
+    y = origy
     if grid[x][y] == "#":
         if count >= max_neighbors:
             return "L"
@@ -89,7 +101,6 @@ grid = orig_grid
 while True:
     new_grid = grid_creator(grid, seat_view, max_neighbors)
     iterations += 1
-    print(iterations)
     if iterations > 500:
         break
     if new_grid != grid:
