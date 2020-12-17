@@ -1,3 +1,4 @@
+import math
 with open('prob13_input.txt', 'r') as f:
 # with open('delete_me.txt', 'r') as f:
     rawdata = f.readlines()
@@ -11,21 +12,22 @@ for bus in buses:
 min_wait = min(wait)
 part1_ans = buses[wait.index(min_wait)] * min_wait
 
-busex = [i for i in rawdata[1].strip().split(",")]
-count = 99999999999992#int(busex[0])
+busx = {int(j):i for i,j in enumerate(rawdata[1].strip().split(',')) if j != 'x'}
+iteration = max(busx)
+count = math.prod(busx.keys())
+busex = {bus:ord-busx[iteration] for bus, ord in busx.items()}
 dict = {}
 while True:
-    for i, bus in enumerate(busex[1:]):
-        if bus == 'x':continue
-        if int(bus) - count % int(bus) - (i+1) != 0:
+    for bus, ord in busex.items():
+        if (count + ord) % bus != 0:
             break
-        dict[int(bus)] = int(bus) - count % int(bus) - (i+1)
-    if len(dict) == len(buses) - 1:
+        dict[bus] = (count + ord) % bus
+    if len(dict) == len(busex):
         print(count, dict)
         break
-    if count > 99999999999992 * 2:
+    if count < 1182922135469659:
         break
-    count += int(busex[0])
+    count -= iteration
 print(count, dict)
 
 print(f'Prob 13 Part 1: {part1_ans}')
