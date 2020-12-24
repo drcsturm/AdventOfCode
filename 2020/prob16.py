@@ -45,7 +45,15 @@ for ticket in nt:
 
 transposed = list(map(list, itertools.zip_longest(
     *good_tickets, fillvalue=None)))
-    
+
+decoded = {}
+for enum, col in enumerate(transposed):
+    for key, val in instruc.items():
+        if len(set(col).difference(val)) == 0:
+            decoded[key] = decoded.get(key, [])
+            decoded[key].append(enum)
+
+
 print(f'Prob 16 Part 1: {part1_ans}')
 part2_ans = ''
 print(f'Prob 16 Part 2: {part2_ans}')
