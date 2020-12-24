@@ -1,7 +1,6 @@
 import itertools
 import re
 with open('prob16_input.txt', 'r') as f:
-# with open('delete_me.txt', 'r') as f:
     rawdata = f.readlines()
 your_ticket = False
 nearby_tickets = False
@@ -46,6 +45,9 @@ for ticket in nt:
 transposed = list(map(list, itertools.zip_longest(
     *good_tickets, fillvalue=None)))
 
+# if the transposed row (good_ticket col) is in 
+# the instruction set then append to a decoded 
+# list of that instruction
 decoded = {}
 for enum, col in enumerate(transposed):
     for key, val in instruc.items():
@@ -53,7 +55,20 @@ for enum, col in enumerate(transposed):
             decoded[key] = decoded.get(key, [])
             decoded[key].append(enum)
 
+# sort the decoded dictionary by list length
+# then remove all the duplicate col numbers across all the lists
+sorted_keys = sorted(decoded, key = lambda key: len(decoded[key]))
+for key in sorted_keys:
+    for key2 in sorted_keys:
+        if key == key2:continue
+        decoded[key2] = set(decoded[key2]).difference(set(decoded[key]))
+
+# get the answer, val is a set so must use pop to get the number
+part2_ans = 1
+for key, val in decoded.items():
+    if key.startswith('departure'):
+        part2_ans *= yt[val.pop()]
+
 
 print(f'Prob 16 Part 1: {part1_ans}')
-part2_ans = ''
 print(f'Prob 16 Part 2: {part2_ans}')
